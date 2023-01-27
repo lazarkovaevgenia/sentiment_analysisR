@@ -65,3 +65,13 @@ counting_words %>%
  geom_col() +
  coord_flip() +
  labs(y = "Sentiment Score")
+ 
+ >>>>>>>>>> create final visualization as a wordcloud  (install.packages("reshape2"), install.packages("wordcloud") )
+ library(reshape2)
+library(wordcloud)
+tidy_data %>%
+ inner_join(bing) %>%
+ count(word, sentiment, sort = TRUE) %>%
+ acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+ comparison.cloud(colors = c("red", "dark green"),
+          max.words = 100)
