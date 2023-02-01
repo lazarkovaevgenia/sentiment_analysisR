@@ -36,4 +36,57 @@ d <- data.frame(frequency=v)
 d <- data.frame(word=names(v), frequency=v)
 head(d, 20)
 
+#Find frequent terms
+findFreqTerms(dtm, lowfreq = 10)
+
+#Examine frequent terms and their assosiation
+findAssocs(dtm, terms = "game", corlimit = 0.3)
+
+#plot the most frequest words
+barplot(d[1:10,]$freq, las = 2, names.arg = d[1:10,]$word,
+         col ="lightgreen", main = "Most frequent words on page",
+         ylad = "Word frequencies")
+
+#generate world cloud
+set.seed(1234)
+wordcloud(words = d$word, freq = d$freq, min.freq = 5,
+          max.words = 100, random.order = FALSE, rot.per = 0.40,
+          colors = brewer.pal(8, "Dark2"))
+          
+
+
+#reqular sentiment score using get_sentiment() function and method of your choice
+# please note that different methods have different scales
+
+syuzhet_vector <- get_sentiment(squid_game, method = "syuzhet") # analyze text based on syuzhet lexicon
+summary(syuzhet_vector)  #see summary statistics of the vector
+
+
+bing_vector <- get_sentiment(squid_game, method = "bing") # analyze text based on bing
+summary(bing_vector)  # see summary statistics of the vector 
+
+afinn_vector <- get_sentiment(squid_game, method = "afinn") #analyze text based on affine
+summary(afinn_vector) #see summary statistics of the vector
+
+
+# run nrc sentiment analysis to return data frame with each row classified as one of the following
+# emotions, rather than score:
+# anger, anticipation, disqust, fear, jiy, asdness, surprise, trust
+# It also counts the number of positive and negative emotions found in each row
+
+vector.nrc <- get_nrc_sentiment(squid_game)  #analyze text based on nrc lexicon
+# transpose
+df.nrc <- data.frame(t(vector.nrc))
+
+# the function rowSums computers column sums across rows for each level of a grouping variable.
+td_new <- data.frame(rowSums(df.nrc[2:44])) #specify the range based on number of columns of data
+
+# Transformation and cleaning
+names(td_new)[1] <- "count"
+td_new <- cbind("sentiment" = rownames(td_new), td_new)
+rownames(td_new) <- NULL
+td_new2 <- td_new[1:10,]
+
+#Plot one - count of words associated with each sentiment
+quickplot(sentiment, data = td_new2, weight = count, geom = "bar", fill = sentiment, ylab = "count")+ggtitle("Page sentiments")
 
