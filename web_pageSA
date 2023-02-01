@@ -1,0 +1,39 @@
+require(dplyr) # library required for data frame manipulation
+
+library("rvest")
+library("dplyr")
+
+install.packages("tm")
+library("tm")
+
+install.packages("syuzhet")
+library(syuzhet)
+
+library(ggplot2)
+
+install.packages("xml2")
+library(xml2)
+
+simple <- read_html("https://en.wikipedia.org/wiki/Squid_Game")
+squid_game <- simple %>%
+  html_nodes("p") %>%
+  html_text()
+  
+  
+#clean data
+squid_document <- Corpus(VectorSource(squid_game))  #library(tm)
+squid_document <- tm_map(squid_document, content_transformer(tolower))
+squid_document <- tm_map(squid_document, removeNumbers)
+squid_document <- tm_map(squid_document, removeWords, stopwords("english"))
+squid_document <- tm_map(squid_document, removePunctuation)
+squid_document <- tm_map(squid_document, stripWhitespace)
+
+#build a table with the words and their frequency
+dtm <- TermDocumentMatrix(squid_document)
+m <- as.matrix(dtm)
+v <- sort(rowSums(m), decreasing = TRUE)
+d <- data.frame(frequency=v)
+d <- data.frame(word=names(v), frequency=v)
+head(d, 20)
+
+
