@@ -1,0 +1,19 @@
+library(rvest)
+library(dplyr)
+
+
+#create html doc from a url
+
+link <- "https://vibe.us/shop/us/products/"
+page <- read_html(link)
+
+ 
+ #select part of doc using css selectors
+ 
+name <- page %>% html_nodes(".bundle-content .title") %>% html_text()
+rating <- page %>% html_nodes(".label-rating .is-rating") %>% html_text()
+synopsis <- page %>% html_nodes(".description") %>% html_text()
+
+df <- data.frame(name, rating, synopsis, stringsAsFactors = FALSE)
+
+ 
