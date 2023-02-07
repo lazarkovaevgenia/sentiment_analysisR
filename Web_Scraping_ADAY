@@ -6,12 +6,39 @@ page = read_html(link)
 
 reviews <- page %>% html_nodes(".yotpo-question-field-description , .content-review") %>% html_text()
 
-reviews <- page %>% html_element("#431633821") %>% html_text()
+reviews <- page %>% html_elements("#MainContent p") %>% html_text()
+
+#clean data
+text <- Corpus(VectorSource(reviews))
+text <- tm_map(text, content_transformer(tolower))
+text <- tm_map(text, removeNumbers)
+text <- tm_map(text, removeWords, stopwords("english"))
+text <- tm_map(text, removePunctuation)
+text <- tm_map(text, stripWhitespace)
 
 
-year <- page %>% html_nodes(".text-muted.unbold") %>% html_text()
-rating <- page %>% html_nodes(".ratings-imdb-rating strong") %>% html_text()
-synopsis <- page %>% html_nodes(".ratings-bar+ .text-muted") %>% html_text()
+#build a table with the words and their frequency
+dtm <- TermDocumentMatrix(text)
+m <- as.matrix(dtm)
+v <- sort(rowSums(m), decreasing = TRUE)
+d <- data.frame(frequency=v)
+d <- data.frame(word=names(v), frequency=v)
+head(d, 20)
 
-movies = data.frame(name, year, rating, synopsis, stringsAsFactors = FALSE)
-write.csv(movies, "movies.csv")
+#Find frequent terms
+findFreqTerms(dtm, lowfreq = 10)
+
+#Examine frequent terms and their assosiation
+findAssocs(dtm, terms = "silk", corlimit = 0.3)
+
+#plot the most frequest words
+barplot(d[1:10,]$freq, las = 2, names.arg = d[1:10,]$word,
+         col ="lightgreen", main = "Most frequent words on page",
+         ylad = "Word frequencies")
+         
+         
+#generate world cloud  -- library(wordcloud)
+set.seed(1234)
+wordcloud(words = d$word, freq = d$freq, min.freq = 5,
+          max.words = 100, random.order = FALSE, rot.per = 0.40,
+          colors = brewer.pal(8, "Dark2"))
