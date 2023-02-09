@@ -2,9 +2,12 @@
 
 simple <- read_html("https://www.vanta.com/customers/flo-health")
 page <- simple %>%
-  html_nodes("p") %>%
+  html_nodes(".uxd-truncate-text") %>%
   html_text()
-  
+
+#page <- simple %>% html_nodes(".uxd-truncate-text") %>% html_text()
+#full_review_links = page %>% html_nodes(".lister-item-header a") %>%
+
 
 #clean data
 clean_data <- Corpus(VectorSource(page))  #library(tm)
