@@ -7,6 +7,9 @@ library(tidyverse)
 library(netstat)
 
 #binman::list_versions("chromedriver")
+#system('docker pull selenium/standalone-chrome')
+#system('docker run -d -p 4445:4444 selenium/standalone-chrome')
+#remDr <- remoteDriver(remoteServerAddr = "localhost", port = 4445L, browserName = "chrome")
 
 dr_driver_object <- rsDriver(
   browser = "chrome",
