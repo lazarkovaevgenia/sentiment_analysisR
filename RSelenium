@@ -6,9 +6,19 @@ library(RSelenium)
 library(tidyverse)
 library(netstat)
 
+#binman::list_versions("chromedriver")
+
 dr_driver_object <- rsDriver(
   browser = "chrome",
-  chromever = '111.0.5563.19',
+  chromever = '110.0.5481.77',
   verbose = F,
   port = free_port()
+)
+
+
+dr_driver_object <- rsDriver(
+  browser = "firefox",
+  version = "",
+  verbose = F,
+  port = 4444
 )
