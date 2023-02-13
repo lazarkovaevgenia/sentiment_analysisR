@@ -1,0 +1,14 @@
+install.packages("RSelenium")
+install.packages("tidyverse")
+install.packages("netstat")
+
+library(RSelenium)
+library(tidyverse)
+library(netstat)
+
+dr_driver_object <- rsDriver(
+  browser = "chrome",
+  chromever = '111.0.5563.19',
+  verbose = F,
+  port = free_port()
+)
